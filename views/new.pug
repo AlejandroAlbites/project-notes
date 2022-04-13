@@ -3,26 +3,26 @@ extends layout
 block content 
     form(action="/notes" method="post")
         div
-            label(for="name") Title 
-            input(type="text" id="name" name="name")
+            label(for="title") Title 
+            input(type="text" id="title" name="title")
+        //- div 
+        //-     label(for="password") Password
+        //-     input(type="password" name="password" id="password")
         div 
-            label(for="password") Password
-            input(type="password" name="password" id="password")
-        div 
-            label(for="text") Text
-            textarea(type="text" name="text" id="text")
-        div 
-            label(for="country") Country 
-            select(name="country" id="country")
-                option(value="PE") Perú
-                option(value="MX") Mexico
-        div 
-            label(for="male") Male 
-            input(type="radio" id="male" name="gender" checked="true") 
-            label(for="female") Female 
-            input(type="radio" id="female" name="gender")
-        div 
-            input(type="checkbox" id="terms" name="terms")
-            label(for="terms") Aceptar los terminos y condiciones 
+            label(for="body") Text
+            textarea(type="text" name="body" id="body")
+        //- div 
+        //-     label(for="country") Country 
+        //-     select(name="country" id="country")
+        //-         option(value="PE") Perú
+        //-         option(value="MX") Mexico
+        //- div 
+        //-     label(for="male") Male 
+        //-     input(type="radio" id="male" name="gender" checked="true") 
+        //-     label(for="female") Female 
+        //-     input(type="radio" id="female" name="gender")
+        //- div 
+        //-     input(type="checkbox" id="terms" name="terms")
+        //-     label(for="terms") Aceptar los terminos y condiciones 
 
         button(type="submit") Send

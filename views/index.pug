@@ -1,8 +1,9 @@
 extends layout 
 
 block content
-        h3 mostrando las notas 
-        each note in notes 
-            p #{note}
-        div 
-            h2 vistas #{views}
+        h3 mostrando las notas
+        a(href="/notes/new") New Note
+        each note in notes
+            div 
+                h2 #{note._id} - #{note.title}
+                p #{note.body}
