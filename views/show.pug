@@ -10,4 +10,18 @@ block body
         h1(class="body-title")= currentNote.title 
         p(class="body-text")= currentNote.body
 
+    script. 
+        const btnDelete = document.querySelector(".btn-delete")
+            btnDelete.addEventListener("click", function(e) {
+                e.preventDefault();
+
+                if(confirm("are you sure to delete this note?")){
+                    fetch("/notes/#{currentNote._id}", {
+                        method: "DELETE"
+                    }).then(response => {
+                        window.location= "/"
+                    });
+                }
+            });
+
                   

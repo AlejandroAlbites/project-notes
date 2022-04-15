@@ -8,16 +8,16 @@ const app = express();
 mongoose.connect("mongodb://localhost:27017/notes", {useNewUrlParser: true});
 
 // middleware
-const logger = (req, res, next) => {
-    console.log("nueva peticion https");
-    next();
-};
+// const logger = (req, res, next) => {
+//     console.log("nueva peticion https");
+//     next();
+// };
 //fin del middlweare
 
 app.set("view engine", "pug");
 app.set("views", "views");
 app.use("/assets", express.static("assets"));
-app.use(logger);
+// app.use(logger);
 app.use(express.urlencoded({extended: true}));
 app.use(cookieSession({
     secret: "una_cadena_secreta",
@@ -27,10 +27,7 @@ app.use(cookieSession({
 //MUESTRA LA LISTA DE NOTAS
 
 app.get( "/", async (req, res) => {
-    // const name = req.query.name;
-    // const age = req.query.age;
     const notes = await Note.find();
-    // const notes = ["nota1", "nota2", "nota3"];
     res.render('index', {notes});
 });
 
@@ -54,12 +51,48 @@ app.post("/notes",async (req,res, next) => {
     }
     res.redirect("/");
 });
-
+//Muestra la nota
 app.get("/notes/:id", async (req, res) => {
     const notes = await Note.find();
     const note = await Note.findById(req.params.id);
     res.render("show", {notes: notes, currentNote: note})
 });
+// muestra el formulario para editar una nota
 
+app.get("/notes/:id/edit", async (req, res, next) => {
+    try {
+        const notes = await Note.find();
+        const note = await Note.findById(req.params.id);
+        res.render("edit", {notes: notes, currentNote: note});
+    } catch (e) {
+        return next(e);
+    }    
+});
+
+//actualiza una nota
+app.patch("/notes/:id", async (req, res, next) => {
+    const id = req.params.id;
+    const note = await Note.findById(id);
+
+    note.title = req.body.title;
+    note.body = req.body.body;
+
+    try {
+        await note.save({});
+        res.status(204).send({});
+    } catch (e) {
+        return next(e);
+    }
+});
+// Elimina una nota
+app.delete("/notes/:id", async (req, res, next) => {
+    try {
+        await Note.deleteOne({ _id: req.params.id});
+        res.status(204).send({});
+    } catch (e) {
+        return next(e);
+    }
+    
+});
 
 app.listen(3000, () => console.log("Listening on port 3000"));
