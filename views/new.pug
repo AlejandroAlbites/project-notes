@@ -1,28 +1,20 @@
-extends layout 
+extends index
 
-block content 
-    form(action="/notes" method="post")
-        div
-            label(for="title") Title 
-            input(type="text" id="title" name="title")
-        //- div 
-        //-     label(for="password") Password
-        //-     input(type="password" name="password" id="password")
-        div 
-            label(for="body") Text
-            textarea(type="text" name="body" id="body")
-        //- div 
-        //-     label(for="country") Country 
-        //-     select(name="country" id="country")
-        //-         option(value="PE") Perú
-        //-         option(value="MX") Mexico
-        //- div 
-        //-     label(for="male") Male 
-        //-     input(type="radio" id="male" name="gender" checked="true") 
-        //-     label(for="female") Female 
-        //-     input(type="radio" id="female" name="gender")
-        //- div 
-        //-     input(type="checkbox" id="terms" name="terms")
-        //-     label(for="terms") Aceptar los terminos y condiciones 
+block body
+    div(class="note-form-page")
+        form(action="/notes" method="post")
+            div
+                input(type="text" id="title" name="title" placeholder="Insert the title" autocomplete="off")
+            div 
+                textarea(type="text" name="body" id="body" rows="8" placeholder="Insert your text ...")
+            div(class="form-actions")
+                a(href="/" class="btn") Cancel
+                button(type="submit" class="btn btn-primary") Create Note 
+       
+    script 
+        let textarea =document.getElementById("body");
+        let heightLimit = 1000; 
 
-        button(type="submit") Send
+        textarea.oninput = function() {
+            textarea.style.height = "";
+            textarea.style.height = Math.min(textarea.scrollHeight, heightLimit)+ "px";};

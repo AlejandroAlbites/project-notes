@@ -1,0 +1,13 @@
+extends index 
+
+block body 
+    div(class="body-actions")
+        a(href=`/notes/${currentNote._id}/edit`)
+            i(class="far fa-edit")
+        a(href="#", class="btn-delete")
+            i(class="far fa-trash-alt")
+    div(class="body-content")
+        h1(class="body-title")= currentNote.title 
+        p(class="body-text")= currentNote.body
+
+                  
