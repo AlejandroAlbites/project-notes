@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Note = require("./models/note")
+const Note = require("./models/note");
+const User = require("./models/User");
 const cookieSession = require('cookie-session');
+const md = require('marked');
 const app = express();
 
 // llamando a mongoose
@@ -24,24 +26,45 @@ app.use(cookieSession({
     maxAge: 24*60*60*1000
 }));
 
+const requireUser = (req, res, next) => {
+    if(!res.locals.user) {
+        return res.redirect("/login");
+    }
+    next();
+};
+
+app.use(async (req, res, next) => {
+    const userId = req.session.userId;
+    if(userId) {
+        const user = await User.findById(userId);
+        if(user){
+            res.locals.user = user;
+        } else {
+            delete req.session.userId;
+        }
+    }
+    next();
+})
+
 //MUESTRA LA LISTA DE NOTAS
 
-app.get( "/", async (req, res) => {
-    const notes = await Note.find();
+app.get( "/", requireUser, async (req, res) => {
+    const notes = await Note.find({ user: res.locals.user});
     res.render('index', {notes});
 });
 
 //MUESTRA EL FORMULARIO PARA CREAR UNA NOTA
-app.get("/notes/new", async (req,res) => {
-    const notes = await Note.find();
+app.get("/notes/new", requireUser, async (req,res) => {
+    const notes = await Note.find({ user: res.locals.user});
     res.render("new", {notes});
 });
 
 //ENVIA LA PETICION PARA CREAR LA NOTA
-app.post("/notes",async (req,res, next) => {
+app.post("/notes",requireUser, async (req,res, next) => {
     const data = {
         title: req.body.title,
         body: req.body.body,
+        user: res.locals.user,
     };
     try {
         const note = new Note(data);
@@ -52,14 +75,14 @@ app.post("/notes",async (req,res, next) => {
     res.redirect("/");
 });
 //Muestra la nota
-app.get("/notes/:id", async (req, res) => {
-    const notes = await Note.find();
+app.get("/notes/:id", requireUser, async (req, res) => {
+    const notes = await Note.find({ user: res.locals.user});
     const note = await Note.findById(req.params.id);
     res.render("show", {notes: notes, currentNote: note})
 });
 // muestra el formulario para editar una nota
 
-app.get("/notes/:id/edit", async (req, res, next) => {
+app.get("/notes/:id/edit", requireUser, async (req, res, next) => {
     try {
         const notes = await Note.find();
         const note = await Note.findById(req.params.id);
@@ -70,7 +93,7 @@ app.get("/notes/:id/edit", async (req, res, next) => {
 });
 
 //actualiza una nota
-app.patch("/notes/:id", async (req, res, next) => {
+app.patch("/notes/:id", requireUser, async (req, res, next) => {
     const id = req.params.id;
     const note = await Note.findById(id);
 
@@ -85,7 +108,7 @@ app.patch("/notes/:id", async (req, res, next) => {
     }
 });
 // Elimina una nota
-app.delete("/notes/:id", async (req, res, next) => {
+app.delete("/notes/:id", requireUser, async (req, res, next) => {
     try {
         await Note.deleteOne({ _id: req.params.id});
         res.status(204).send({});
@@ -94,5 +117,51 @@ app.delete("/notes/:id", async (req, res, next) => {
     }
     
 });
+
+// creando rutas para el modelo de usuario
+
+app.get( "/register", (req, res) => {
+    res.render("register");
+});
+
+app.post("/register", async (req, res, next) => {
+    try{
+        const user = await User.create({
+            email: req.body.email,
+            password: req.body.password
+        });
+        res.redirect("/login");
+
+    }catch(e) {
+        return next(e);
+    }
+})
+
+app.get( "/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/login", async (req, res, next) => {
+    try {
+        const user = await User.authenticate(req.body.email, req.body.password);
+        if(user){
+            req.session.userId = user._id;
+            return res.redirect("/");
+        }else{
+            res.render("/login", {error: " wrong email or password. Try again!"});
+        }
+    } catch(e) {
+        return next(e);
+    }
+});
+
+app.get( "/logout", requireUser, (req, res) => {
+    res.session = null;
+    res.clearCookie("session");
+    res.clearCookie("session.sig");
+    res.redirect("/login");
+});
+
+
 
 app.listen(3000, () => console.log("Listening on port 3000"));

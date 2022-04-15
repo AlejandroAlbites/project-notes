@@ -2,7 +2,14 @@ const mongoose = require("mongoose");
 
 // MONGOOSE / Creando el esquema
 const NoteSchema = mongoose.Schema({
-    title: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+    },
+    title: {
+        type: String,
+        required: true,
+    },
     body: String
 });
 NoteSchema.methods.truncateBody = function() {

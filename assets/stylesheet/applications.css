@@ -55,11 +55,15 @@ a {
     max-height: 100%;
     overflow-y: scroll;
 }
+.body-header {
+    text-align: right;
+    padding: 10px;
+}
 .body .body-actions {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 10px;
+    top: 40px;
     right: 10px;
 }
 .body .body-actions a {
@@ -131,4 +135,75 @@ a {
     border: none;
     margin: 5px;
 }
-.note-form-page .form-actions .btn.btn-primary { background-color: #666;}
+.note-form-page .form-actions .btn .btn-primary { background-color: #666;}
+
+.box-general {
+    position: relative;
+    width: 300px;
+    height: 280px;
+    left: 40%;
+    top: 20%;
+    display: flexbox;
+    background-color: #666;
+    /* border: 1px solid black; */
+    box-shadow: 2px 2px 4px 2px black;
+    border-radius: 4px;
+}
+
+.card-header{
+    padding: 4px;
+    text-align: center;
+    border-bottom: 2px solid black;
+}
+.card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid black;
+}
+.form{
+    padding: 5px;
+}
+#email {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(229, 226, 226);
+}
+#password {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(229, 226, 226);
+}
+
+.option{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    padding-left: 30px;
+    border-bottom: 2px solid black;
+    font-size: 0.8rem;
+    
+}
+.foot{
+    padding-left: 20px;
+    color: black;
+    text-align: right;
+}
+.btn1 {
+    background: rgb(64, 63, 63);
+    position: relative;
+    left: 100px;
+    top: 10px;
+    color: white;
+    font-size: 0.95rem;
+    padding: 10px 20px;
+    border: none;
+    margin: 5px;
+    border-radius: 4px;
+    text-align: center;
+    
+}
+.btn1:hover{
+    background-color: rgb(45, 44, 44);
+}
